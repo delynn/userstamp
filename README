@@ -1,0 +1,122 @@
+Userstamp Plugin (v 2.0)
+========================
+
+Overview
+--------
+The Userstamp Plugin extends ActiveRecord::Base(http://api.rubyonrails.com/classes/ActiveRecord/Base.html)
+to add automatic updating of 'creator', 'updater', and 'deleter' attributes. It is based loosly on the
+ActiveRecord::Timestamp(http://api.rubyonrails.com/classes/ActiveRecord/Timestamp.html) module.
+
+Two 'act_as' class methods are available with this plugin and are required on each of the objects wanting
+to gain this functionality. These two methods are: 'acts_as_stamper' and 'acts_as_stampable'. ActsAsStamper
+should be used with objects that are responsible for creating, updating, or deleting other objects.
+ActsAsStampable should be use with objects that are subject to being created, updated, or deleted by 'stampers'.
+
+
+Installation
+------------
+Installation of the plugin can be done using the built in Rails plugin script. Issue the following command
+from the root of your application:
+
+script/plugin install svn://delynnberry.com/code/plugins/userstamp/trunk userstamp
+
+Once installed you will need to restart your webserver for the plugin to be loaded into the Rails environment.
+
+You might also be interested in using Piston(http://piston.rubyforge.org/index.html) to manage the importing
+and future updating of this plugin.
+
+Usage
+-----
+In version 2 of the Userstamp plug-in, there is now the assumption that you have two different categories of
+objects; those that manimpulate, and those that are manipulated. For those objects that are being manipulated
+we have ActsAsStampable and for the manipulators we have ActsAsStamper. There's also a module for your
+controllers that assists in setting up your environment on a per request basis. To better understand how all
+this works, I think an example is in order. For this example we will assume that we are creating a weblog
+application that is comprised of User and Post objects. Since Users manipulate Posts, we'll do the following:
+
+class User < ActiveRecord::Base
+  acts_as_stamper
+end
+
+And Posts are manipulated by Users, so it should look like this:
+
+class Post < ActiveRecord::Base
+  acts_as_stampable
+end
+
+Then the final piece is the Userstamp module that should be included into a controller
+(the ApplicationController is recommended):
+
+class ApplicationController < ActionController::Base
+  include Userstamp
+end
+
+So, what did we just do here? Well, the acts_as_stamper class method injects two methods into the User class.
+They are #stamper= and #stamper and look like this:
+
+def stamper=(object)
+  Thread.current["#{self.to_s.downcase}_#{self.object_id}_stamper"] = object.is_a?(ActiveRecord::Base) ?
+                                                                                    object.send("#{object.class.primary_key}".to_sym) :
+                                                                                    object
+end
+
+def stamper
+  Thread.current["#{self.to_s.downcase}_#{self.object_id}_stamper"]
+end
+
+With the setter method you can see that we test if the passed in object is a descendant of ActiveRecord.
+If it is we get the value of it's primary key attribute, otherwise we just use the object as is. You'll also
+notice that we store this value using Thread.current, so as to avoid conflict with colliding requests.
+
+The Userstamp module that we included into our ApplicationController uses the setter method to tell the
+application which user is currently in use. By default the 'set_stampers' method looks like this:
+
+def set_stampers
+  User.stamper = self.current_user
+end
+
+You should redefine this method to suite your particular application, but if you are using the ActsAsAuthenticated
+plugin, the module's implementation works just fine out of the box.
+
+Now, let's get back to ActsAsStampable (since it really is the interesting one). If you've already created your
+database with columns called 'creator_id', 'updater_id' and 'deleter_id', and you're Stamper object is 'User' than
+your set and ready to go. ActsAsStampable sets up before_* filters that are responsible for setting those attributes
+at the appropriate times. It also creates the belongs_to relationships for you. If you need to use something different
+the method can be completely customized. For example, here's how one would upgrade from version 1 of the plugin:
+
+class Post < ActiveRecord::Base
+  acts_as_stampable :stamper_class_name => :person,
+                    :creator_attribute  => :created_by,
+                    :updater_attribute  => :updated_by,
+                    :deleter_attribute  => :deleted_by
+end
+
+
+Uninstall
+---------
+Uninstalling the plugin can be done using the built in Rails plugin script. Issue the following command from the root
+of your application:
+
+script/plugin remove userstamp
+
+
+Documentation
+-------------
+RDoc has been run on the plugin directory and is available in the doc directory. You can also view the documentation
+online at: http://code.delynnberry.com/rdoc/userstamp/.
+
+
+Running Unit Tests
+------------------
+There are extensive unit tests in the "test" directory of the plugin. 
+
+
+Bugs & Feedback
+---------------
+Bug reports and feedback are always welcome. Please send them to delynn@gmail.com with [Userstamp] in the subject line.
+
+
+Credits and Special Thanks
+--------------------------
+The original idea for this plugin came from the Rails Wiki article entitled
+"Extending ActiveRecord" (http://wiki.rubyonrails.com/rails/pages/ExtendingActiveRecordExample).
