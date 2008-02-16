@@ -3,8 +3,10 @@ Userstamp Plugin (v 2.0)
 
 Overview
 --------
-The Userstamp Plugin extends ActiveRecord::Base (http://api.rubyonrails.com/classes/ActiveRecord/Base.html) to add automatic updating of 'creator',
-'updater', and 'deleter' attributes. It is based loosely on the ActiveRecord::Timestamp (http://api.rubyonrails.com/classes/ActiveRecord/Timestamp.html) module.
+The Userstamp Plugin extends ActiveRecord::Base
+(http://api.rubyonrails.com/classes/ActiveRecord/Base.html) to add automatic updating of 'creator',
+'updater', and 'deleter' attributes. It is based loosely on the ActiveRecord::Timestamp
+(http://api.rubyonrails.com/classes/ActiveRecord/Timestamp.html) module.
 
 Two class methods ('acts_as_stamper' and 'acts_as_stampable') are implemented in this plugin.
 The acts_as_stamper method is used in models that are responsible for creating, updating, or
