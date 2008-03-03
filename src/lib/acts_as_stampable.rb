@@ -13,7 +13,7 @@ module Ddb #:nodoc:
           
           defaults  = {
                         :record_stamps      => true,
-                        :stamper_class_name => 'User',
+                        :stamper_class_name => :user,
                         :creator_attribute  => 'creator_id',
                         :updater_attribute  => 'updater_id',
                         :deleter_attribute  => 'deleter_id'
@@ -27,11 +27,11 @@ module Ddb #:nodoc:
                                       
           
 
-          self.record_stamps      = options[:record_stamps]
-          self.stamper_class_name = options[:stamper_class_name].to_s.singularize.camelize
-          self.creator_attribute  = options[:creator_attribute].to_s
-          self.updater_attribute  = options[:updater_attribute].to_s
-          self.deleter_attribute  = options[:deleter_attribute].to_s
+          self.record_stamps      = defaults[:record_stamps]
+          self.stamper_class_name = defaults[:stamper_class_name].to_s.singularize.camelize
+          self.creator_attribute  = defaults[:creator_attribute].to_s
+          self.updater_attribute  = defaults[:updater_attribute].to_s
+          self.deleter_attribute  = defaults[:deleter_attribute].to_s
 
           class_eval do
             belongs_to :creator, :class_name => self.stamper_class_name,
@@ -49,8 +49,6 @@ module Ddb #:nodoc:
               before_destroy :set_deleter_attribute
             end
           end
-
-          self.stamper_class_name.constantize.acts_as_stamper
         end
         
         def without_stamps
@@ -64,19 +62,22 @@ module Ddb #:nodoc:
       module InstanceMethods
         private
           def set_creator_attribute
-            if self.record_stamps && respond_to?(self.creator_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?
+            return unless self.record_stamps
+            if respond_to?(self.creator_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?
               write_attribute(self.creator_attribute, self.stamper_class_name.constantize.stamper)
             end
           end
 
           def set_updater_attribute
-            if self.record_stamps && respond_to?(self.updater_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?              
+            return unless self.record_stamps
+            if respond_to?(self.updater_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?              
               write_attribute(self.updater_attribute, self.stamper_class_name.constantize.stamper)
             end
           end
 
           def set_deleter_attribute
-            if self.record_stamps && respond_to?(self.deleter_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?
+            return unless self.record_stamps
+            if respond_to?(self.deleter_attribute.to_sym) && !self.stamper_class_name.constantize.stamper.nil?
               write_attribute(self.deleter_attribute, self.stamper_class_name.constantize.stamper)
               save
             end
@@ -87,4 +88,4 @@ module Ddb #:nodoc:
   end
 end
 
-ActiveRecord::Base.send(:include, Ddb::Userstamp::ActsAsStampable)
+ActiveRecord::Base.send(:include, Ddb::Userstamp::ActsAsStampable) if defined?(ActiveRecord)

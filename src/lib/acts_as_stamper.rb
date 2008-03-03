@@ -36,4 +36,4 @@ module Ddb #:nodoc:
   end
 end
 
-ActiveRecord::Base.send(:include, Ddb::Userstamp::ActsAsStamper)
+ActiveRecord::Base.send(:include, Ddb::Userstamp::ActsAsStamper) if defined?(ActiveRecord)
