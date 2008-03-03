@@ -12,9 +12,9 @@
       method. This sets up the belongs_to relationships and also injects private methods for use by
       the individual callback filter methods.
 
-    * Models that are responsible for updating ('Stampers') now use the acts_as_stamper class
-      method. This injects the stamper= and stamper methods that are thread safe and should be
-      updated per request by a controller.
+    * Models that are responsible for updating now use the acts_as_stamper class method. This
+      injects the stamper= and stamper methods that are thread safe and should be updated per
+      request by a controller.
 
     * The Userstamp module is now meant to be included with one of your project's controllers (the
       Application Controller is recommended). It creates a before filter called 'set_stampers' that
