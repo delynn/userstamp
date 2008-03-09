@@ -1,19 +1,19 @@
 module Ddb #:nodoc:
   module Userstamp
-    module ActsAsStamper
+    module Stamper
       def self.included(base) # :nodoc:
         base.extend(ClassMethods)
       end
 
       module ClassMethods
-        def acts_as_stamper
+        def model_stamper
           # don't allow multiple calls
-          return if self.included_modules.include?(Ddb::Userstamp::ActsAsStamper::StamperMethods)
-          send(:extend, Ddb::Userstamp::ActsAsStamper::StamperMethods)
+          return if self.included_modules.include?(Ddb::Userstamp::Stamper::InstanceMethods)
+          send(:extend, Ddb::Userstamp::Stamper::InstanceMethods)
         end
       end
 
-      module StamperMethods
+      module InstanceMethods
         def stamper=(object)
           object_stamper = if object.is_a?(ActiveRecord::Base)
             object.send("#{object.class.primary_key}".to_sym)
@@ -36,4 +36,4 @@ module Ddb #:nodoc:
   end
 end
 
-ActiveRecord::Base.send(:include, Ddb::Userstamp::ActsAsStamper) if defined?(ActiveRecord)
+ActiveRecord::Base.send(:include, Ddb::Userstamp::Stamper) if defined?(ActiveRecord)

@@ -1,7 +1,7 @@
 class Ping < ActiveRecord::Base
-  acts_as_stampable :stamper_class_name => :person,
-                    :creator_attribute  => :creator_name,
-                    :updater_attribute  => :updater_name,
-                    :deleter_attribute  => :deleter_name
+  stampable :stamper_class_name => :person,
+            :creator_attribute  => :creator_name,
+            :updater_attribute  => :updater_name,
+            :deleter_attribute  => :deleter_name
   belongs_to :post
 end

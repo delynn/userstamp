@@ -1,3 +1,3 @@
-require 'acts_as_stamper'
-require 'acts_as_stampable'
+require 'stamper'
+require 'stampable'
 require 'userstamp'

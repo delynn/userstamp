@@ -52,7 +52,6 @@ class PostsControllerTest < Test::Unit::TestCase
 
     parameters = {:id => 1, :post => {:title => 'Different Second'}}
     @second_request.assign_parameters(@second_controller.class.controller_path, 'update', parameters)
-    Å
     @second_request.session = ActionController::TestSession.new(@second_response.session)
     
     options = @second_controller.send!(:rewrite_options, parameters)

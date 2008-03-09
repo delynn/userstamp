@@ -4,7 +4,7 @@ require 'models/person'
 require 'models/post'
 require 'models/comment'
 
-class UserstampTest < Test::Unit::TestCase  # :nodoc:
+class StampingTests < Test::Unit::TestCase  # :nodoc:
   fixtures :users, :people, :posts, :comments
 
   def setup
@@ -125,31 +125,5 @@ class UserstampTest < Test::Unit::TestCase  # :nodoc:
     assert_equal @nicole.id, @first_post.updater_id
     assert_equal @delynn, @first_post.creator
     assert_equal @nicole, @first_post.updater
-  end
-
-  def test_comment_updating_with_stamped_object
-    Person.stamper = @nicole
-    assert_equal @nicole.id, Person.stamper
-
-    @first_comment.comment << " - Updated"
-    @first_comment.save
-    @first_comment.reload
-    assert_equal @delynn.id, @first_comment.created_by
-    assert_equal @nicole.id, @first_comment.updated_by
-    assert_equal @delynn, @first_comment.creator
-    assert_equal @nicole, @first_comment.updater
-  end
-
-  def test_comment_updating_with_stamped_integer
-    Person.stamper = 2
-    assert_equal 2, Person.stamper
-
-    @first_comment.comment << " - Updated"
-    @first_comment.save
-    @first_comment.reload
-    assert_equal @delynn.id, @first_comment.created_by
-    assert_equal @nicole.id, @first_comment.updated_by
-    assert_equal @delynn, @first_comment.creator
-    assert_equal @nicole, @first_comment.updater
   end
 end
