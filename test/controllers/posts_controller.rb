@@ -15,11 +15,11 @@ class PostsController < UserstampController
       Person.find(session[:person_id])
     end
     
-    def set_stampers
+    def set_stamper
       Person.stamper = self.current_user
     end
 
-    def reset_stampers
+    def reset_stamper
       Person.reset_stamper
     end    
   #end
