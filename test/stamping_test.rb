@@ -15,7 +15,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
   end
 
   def test_person_creation_with_stamped_object
-    assert_equal @zeus.id, User.stamper
+    assert_equal @zeus, User.stamper
     
     person = Person.create(:name => "David")
     assert_equal @zeus.id, person.creator_id
@@ -26,7 +26,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_person_creation_with_stamped_integer
     User.stamper = 2
-    assert_equal 2, User.stamper
+    assert_equal 2, User.stamper.id
 
     person = Person.create(:name => "Daniel")
     assert_equal @hera.id, person.creator_id
@@ -36,7 +36,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
   end
 
   def test_post_creation_with_stamped_object
-    assert_equal @delynn.id, Person.stamper
+    assert_equal @delynn, Person.stamper
 
     post = Post.create(:title => "Test Post - 1")
     assert_equal @delynn.id, post.creator_id
@@ -47,7 +47,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_post_creation_with_stamped_integer
     Person.stamper = 2
-    assert_equal 2, Person.stamper
+    assert_equal 2, Person.stamper.id
 
     post = Post.create(:title => "Test Post - 2")
     assert_equal @nicole.id, post.creator_id
@@ -58,7 +58,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_person_updating_with_stamped_object
     User.stamper = @hera
-    assert_equal @hera.id, User.stamper
+    assert_equal @hera, User.stamper
 
     @delynn.name << " Berry"
     @delynn.save
@@ -71,7 +71,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_person_updating_with_stamped_integer
     User.stamper = 2
-    assert_equal 2, User.stamper
+    assert_equal 2, User.stamper.id
 
     @delynn.name << " Berry"
     @delynn.save
@@ -84,7 +84,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_post_updating_with_stamped_object
     Person.stamper = @nicole
-    assert_equal @nicole.id, Person.stamper
+    assert_equal @nicole, Person.stamper
 
     @first_post.title << " - Updated"
     @first_post.save
@@ -97,7 +97,7 @@ class StampingTests < Test::Unit::TestCase  # :nodoc:
 
   def test_post_updating_with_stamped_integer
     Person.stamper = 2
-    assert_equal 2, Person.stamper
+    assert_equal 2, Person.stamper.id
 
     @first_post.title << " - Updated"
     @first_post.save

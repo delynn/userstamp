@@ -15,7 +15,7 @@ class CompatibilityStampingTests< Test::Unit::TestCase  # :nodoc:
   end
 
   def test_comment_creation_with_stamped_object
-    assert_equal @delynn.id, Person.stamper
+    assert_equal @delynn, Person.stamper
 
     comment = Comment.create(:comment => "Test Comment")
     assert_equal @delynn.id, comment.created_by
@@ -26,7 +26,7 @@ class CompatibilityStampingTests< Test::Unit::TestCase  # :nodoc:
 
   def test_comment_creation_with_stamped_integer
     Person.stamper = 2
-    assert_equal 2, Person.stamper
+    assert_equal 2, Person.stamper.id
 
     comment = Comment.create(:comment => "Test Comment - 2")
     assert_equal @nicole.id, comment.created_by
@@ -37,7 +37,7 @@ class CompatibilityStampingTests< Test::Unit::TestCase  # :nodoc:
   
   def test_comment_updating_with_stamped_object
     Person.stamper = @nicole
-    assert_equal @nicole.id, Person.stamper
+    assert_equal @nicole, Person.stamper
 
     @first_comment.comment << " - Updated"
     @first_comment.save
@@ -50,7 +50,7 @@ class CompatibilityStampingTests< Test::Unit::TestCase  # :nodoc:
 
   def test_comment_updating_with_stamped_integer
     Person.stamper = 2
-    assert_equal 2, Person.stamper
+    assert_equal 2, Person.stamper.id
 
     @first_comment.comment << " - Updated"
     @first_comment.save
