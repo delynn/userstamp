@@ -77,7 +77,21 @@ recommended that you do this in your ApplicationController:
     include Userstamp
   end
 
-Okay, so what have we done? The <tt>model_stamper</tt> class method injects two methods into the
+If all you are interested in is making sure all tables that have the proper columns are stamped
+by the currently logged in user you can stop right here. More than likely you want all your
+associations setup on your stamped objects, and that's where the <tt>stampable</tt> class method
+comes in. So in our example we'll want to use this method in both our User and Post classes:
+
+  class User < ActiveRecord::Base
+    model_stamper
+    stampable
+  end
+  
+  class Post < ActiveRecord::Base
+    stampable
+  end
+
+Okay, so what all have we done? The <tt>model_stamper</tt> class method injects two methods into the
 User class. They are #stamper= and #stamper and look like this:
 
   def stamper=(object)
@@ -97,9 +111,12 @@ User class. They are #stamper= and #stamper and look like this:
 The big change with this new version is that we are now using Thread.current to save the current
 stamper so as to avoid conflict with concurrent requests.
 
+The <tt>stampable</tt> method allows you to customize what columns will get stamped, and also
+creates the +creator+, +updater+, and +deleter+ associations.
+
 The Userstamp module that we included into our ApplicationController uses the setter method to
 set which user is currently making the request. By default the 'set_stampers' method works perfectly
-with the ActsAsAuthenticated[] plug-in:
+with the RestfulAuthentication[http://svn.techno-weenie.net/projects/plugins/restful_authentication] plug-in:
 
   def set_stampers
     User.stamper = self.current_user
@@ -127,6 +144,9 @@ mode to have the plug-in use the old "_by" columns by default. To enable this mo
 following line to the RAILS_ROOT/config/environment.rb file:
 
   Ddb::Userstamp.compatibility_mode = true
+  
+If you are having a difficult time getting the Userstamp plug-in to work, I recommend you checkout
+the sample application that I created. You can find this application on GitHub[http://github.com/delynn/userstamp_sample]
 
 == Uninstall
 Uninstalling the plugin can be done using the built in Rails plugin script. Issue the following
