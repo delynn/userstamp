@@ -1,3 +1,5 @@
+$:.unshift(File.dirname(__FILE__))
+
 require 'helpers/unit_test_helper'
 Ddb::Userstamp.compatibility_mode = true
 require 'models/user'

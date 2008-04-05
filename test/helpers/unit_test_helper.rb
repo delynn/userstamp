@@ -9,7 +9,7 @@ require 'active_record/fixtures'
 require 'active_support'
 require 'init'
 
-config = YAML::load(IO.read('database.yml'))[ENV['DB'] || 'test']
+config = YAML::load(IO.read(File.join(File.dirname(__FILE__), '..', 'database.yml')))[ENV['DB'] || 'test']
 ActiveRecord::Base.configurations = config
 ActiveRecord::Base.establish_connection(config)
 

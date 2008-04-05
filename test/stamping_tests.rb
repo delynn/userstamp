@@ -1,3 +1,5 @@
+$:.unshift(File.dirname(__FILE__))
+
 require 'helpers/unit_test_helper'
 require 'models/user'
 require 'models/person'

@@ -1,3 +1,5 @@
+$:.unshift(File.dirname(__FILE__))
+
 require 'helpers/functional_test_helper'
 require 'controllers/userstamp_controller'
 require 'controllers/users_controller'

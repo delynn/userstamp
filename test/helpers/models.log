@@ -1,0 +1,77 @@
+# Logfile created on Tue Mar 11 20:25:36 -0600 2008 by /
+  [4;36;1mSQL (0.000311)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: users: DROP TABLE users[0m
+  [4;36;1mSQL (0.001616)[0m   [0;1mCREATE TABLE users ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: people: DROP TABLE people[0m
+  [4;36;1mSQL (0.001087)[0m   [0;1mCREATE TABLE people ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: posts: DROP TABLE posts[0m
+  [4;36;1mSQL (0.001437)[0m   [0;1mCREATE TABLE posts ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleter_id" integer DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: comments: DROP TABLE comments[0m
+  [4;36;1mSQL (0.001080)[0m   [0;1mCREATE TABLE comments ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer DEFAULT NULL, "comment" varchar(255) DEFAULT NULL, "created_by" integer DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_by" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleted_by" integer DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: pings: DROP TABLE pings[0m
+  [4;36;1mSQL (0.001267)[0m   [0;1mCREATE TABLE pings ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer DEFAULT NULL, "ping" varchar(255) DEFAULT NULL, "creator_name" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updater_name" varchar(255) DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleter_name" varchar(255) DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.001048)[0m   [0mCREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.001148)[0m   [0;1mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;35;1mSQL (0.001152)[0m   [0mUPDATE schema_info SET version = 0[0m
+  [4;36;1mPerson Load (0.000254)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000316)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 1) [0m
+  [4;36;1mPost Update (0.000398)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different', "deleter_id" = NULL, "updater_id" = 1, "updated_at" = '2008-03-11 20:25:36', "created_on" = '2008-03-11 20:25:36' WHERE "id" = 1[0m
+  [4;35;1mPerson Load (0.000209)[0m   [0mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;36;1mPerson Load (0.000187)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000193)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 2) [0m
+  [4;36;1mPerson Load (0.000183)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 2) [0m
+  [4;35;1mPost Load (0.000193)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 1) [0m
+  [4;36;1mPost Update (0.000256)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different Second', "deleter_id" = NULL, "updater_id" = 2, "updated_at" = '2008-03-11 20:25:36', "created_on" = '2008-03-11 20:25:36' WHERE "id" = 1[0m
+  [4;35;1mPerson Load (0.000206)[0m   [0mSELECT * FROM people WHERE (people."id" = 2) [0m
+  [4;36;1mPerson Load (0.000186)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000195)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 2) [0m
+  [4;36;1mPost Update (0.000097)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different', "deleter_id" = NULL, "updater_id" = 1, "updated_at" = '2008-03-11 20:25:36', "created_on" = '2008-03-11 20:25:36' WHERE "id" = 2[0m
+  [4;35;1mPerson Load (0.000182)[0m   [0mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;36;1mUser Load (0.000181)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Update (0.000261)[0m   [0;1mUPDATE users SET "creator_id" = NULL, "name" = 'Different', "updater_id" = 2, "updated_at" = '2008-03-11 20:25:36', "created_on" = '2008-03-11 20:25:36' WHERE "id" = 2[0m
+  [4;35;1mUser Load (0.000194)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Load (0.000177)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Load (0.000177)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 1) [0m
+  [4;35;1mUser Load (0.000183)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Update (0.000260)[0m   [0;1mUPDATE users SET "creator_id" = NULL, "name" = 'Different Second', "updater_id" = 1, "updated_at" = '2008-03-11 20:25:36', "created_on" = '2008-03-11 20:25:36' WHERE "id" = 2[0m
+  [4;35;1mUser Load (0.000183)[0m   [0mSELECT * FROM users WHERE (users."id" = 1) [0m
+  [4;36;1mSQL (0.000319)[0m   [0;1mselect sqlite_version(*)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: users: DROP TABLE users[0m
+  [4;36;1mSQL (0.001715)[0m   [0;1mCREATE TABLE users ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: people: DROP TABLE people[0m
+  [4;36;1mSQL (0.001041)[0m   [0;1mCREATE TABLE people ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: posts: DROP TABLE posts[0m
+  [4;36;1mSQL (0.001440)[0m   [0;1mCREATE TABLE posts ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255) DEFAULT NULL, "creator_id" integer DEFAULT NULL, "created_on" datetime DEFAULT NULL, "updater_id" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleter_id" integer DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: comments: DROP TABLE comments[0m
+  [4;36;1mSQL (0.001191)[0m   [0;1mCREATE TABLE comments ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer DEFAULT NULL, "comment" varchar(255) DEFAULT NULL, "created_by" integer DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_by" integer DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleted_by" integer DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: pings: DROP TABLE pings[0m
+  [4;36;1mSQL (0.001096)[0m   [0;1mCREATE TABLE pings ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer DEFAULT NULL, "ping" varchar(255) DEFAULT NULL, "creator_name" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updater_name" varchar(255) DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "deleter_name" varchar(255) DEFAULT NULL, "deleted_at" datetime DEFAULT NULL) [0m
+  [4;35;1mSQL (0.001232)[0m   [0mCREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.001710)[0m   [0;1mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;35;1mSQL (0.001230)[0m   [0mUPDATE schema_info SET version = 0[0m
+  [4;36;1mPerson Load (0.000280)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000207)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 1) [0m
+  [4;36;1mPost Update (0.000316)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different', "deleter_id" = NULL, "updater_id" = 1, "updated_at" = '2008-04-05 10:38:38', "created_on" = '2008-04-05 10:38:38' WHERE "id" = 1[0m
+  [4;35;1mPerson Load (0.000201)[0m   [0mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;36;1mPerson Load (0.000187)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000194)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 2) [0m
+  [4;36;1mPerson Load (0.000184)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 2) [0m
+  [4;35;1mPost Load (0.000192)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 1) [0m
+  [4;36;1mPost Update (0.000256)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different Second', "deleter_id" = NULL, "updater_id" = 2, "updated_at" = '2008-04-05 10:38:38', "created_on" = '2008-04-05 10:38:38' WHERE "id" = 1[0m
+  [4;35;1mPerson Load (0.000190)[0m   [0mSELECT * FROM people WHERE (people."id" = 2) [0m
+  [4;36;1mPerson Load (0.000182)[0m   [0;1mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;35;1mPost Load (0.000191)[0m   [0mSELECT * FROM posts WHERE (posts."id" = 2) [0m
+  [4;36;1mPost Update (0.000100)[0m   [0;1mUPDATE posts SET "deleted_at" = NULL, "creator_id" = 1, "title" = 'Different', "deleter_id" = NULL, "updater_id" = 1, "updated_at" = '2008-04-05 10:38:38', "created_on" = '2008-04-05 10:38:38' WHERE "id" = 2[0m
+  [4;35;1mPerson Load (0.000192)[0m   [0mSELECT * FROM people WHERE (people."id" = 1) [0m
+  [4;36;1mUser Load (0.000180)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Update (0.000263)[0m   [0;1mUPDATE users SET "creator_id" = NULL, "name" = 'Different', "updater_id" = 2, "updated_at" = '2008-04-05 10:38:38', "created_on" = '2008-04-05 10:38:38' WHERE "id" = 2[0m
+  [4;35;1mUser Load (0.000193)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Load (0.000175)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Load (0.000179)[0m   [0;1mSELECT * FROM users WHERE (users."id" = 1) [0m
+  [4;35;1mUser Load (0.000169)[0m   [0mSELECT * FROM users WHERE (users."id" = 2) [0m
+  [4;36;1mUser Update (0.000254)[0m   [0;1mUPDATE users SET "creator_id" = NULL, "name" = 'Different Second', "updater_id" = 1, "updated_at" = '2008-04-05 10:38:38', "created_on" = '2008-04-05 10:38:38' WHERE "id" = 2[0m
+  [4;35;1mUser Load (0.000173)[0m   [0mSELECT * FROM users WHERE (users."id" = 1) [0m

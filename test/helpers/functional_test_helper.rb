@@ -14,7 +14,7 @@ require 'action_controller/test_process'
 require 'action_controller/integration'
 require 'init'
 
-config = YAML::load(IO.read('database.yml'))[ENV['DB'] || 'test']
+config = YAML::load(IO.read(File.join(File.dirname(__FILE__), '..', 'database.yml')))[ENV['DB'] || 'test']
 ActiveRecord::Base.configurations = config
 ActiveRecord::Base.establish_connection(config)
 
