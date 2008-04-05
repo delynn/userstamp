@@ -81,7 +81,6 @@
 
       <div class="name-list">
       <a href="#M000005">stampable</a>&nbsp;&nbsp;
-      <a href="#M000007">stamper_class</a>&nbsp;&nbsp;
       <a href="#M000006">without_stamps</a>&nbsp;&nbsp;
       </div>
     </div>
@@ -114,64 +113,59 @@
         </div>
       
         <div class="method-description">
+          <p>
+This method is automatically called on for all classes that inherit from
+ActiveRecord, but if you need to customize how the plug-in functions, this
+is the method to use. Here&#8216;s an example:
+</p>
+<pre>
+  class Post &lt; ActiveRecord::Base
+    stampable :stamper_class_name =&gt; :person,
+              :creator_attribute  =&gt; :create_user,
+              :updater_attribute  =&gt; :update_user,
+              :deleter_attribute  =&gt; :delete_user
+  end
+</pre>
+<p>
+The method will automatically setup all the associations, and create
+<tt>before_save</tt> and <tt>before_create</tt> filters for doing the
+stamping.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000005-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/stampable.rb, line 22</span>
-22:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stampable</span>(<span class="ruby-identifier">options</span> = {})
-23:           <span class="ruby-identifier">defaults</span>  = {
-24:                         <span class="ruby-identifier">:stamper_class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:user</span>,
-25:                         <span class="ruby-identifier">:creator_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">created_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:creator_id</span>,
-26:                         <span class="ruby-identifier">:updater_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">updated_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:updater_id</span>,
-27:                         <span class="ruby-identifier">:deleter_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">deleted_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:deleter_id</span>
-28:                       }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
-29: 
-30:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span> = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:stamper_class_name</span>].<span class="ruby-identifier">to_sym</span>
-31:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">creator_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:creator_attribute</span>].<span class="ruby-identifier">to_sym</span>
-32:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">updater_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:updater_attribute</span>].<span class="ruby-identifier">to_sym</span>
-33:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deleter_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:deleter_attribute</span>].<span class="ruby-identifier">to_sym</span>
-34: 
-35:           <span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
-36:             <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:creator</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">singularize</span>.<span class="ruby-identifier">camelize</span>,
-37:                                  <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">creator_attribute</span>
-38:                                  
-39:             <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:updater</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">singularize</span>.<span class="ruby-identifier">camelize</span>,
-40:                                  <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">updater_attribute</span>
-41:                                  
-42:             <span class="ruby-identifier">before_save</span>     <span class="ruby-identifier">:set_updater_attribute</span>
-43:             <span class="ruby-identifier">before_create</span>   <span class="ruby-identifier">:set_creator_attribute</span>
-44:                                  
-45:             <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">defined?</span>(<span class="ruby-constant">Caboose</span><span class="ruby-operator">::</span><span class="ruby-constant">Acts</span><span class="ruby-operator">::</span><span class="ruby-constant">Paranoid</span>)
-46:               <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:deleter</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>,
-47:                                    <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deleter_attribute</span>
-48:               <span class="ruby-identifier">before_destroy</span>  <span class="ruby-identifier">:set_deleter_attribute</span>
-49:             <span class="ruby-keyword kw">end</span>
-50:           <span class="ruby-keyword kw">end</span>
-51:         <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000007" class="method-detail">
-        <a name="M000007"></a>
-
-        <div class="method-heading">
-          <a href="#M000007" class="method-signature">
-          <span class="method-name">stamper_class</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000007-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/stampable.rb, line 60</span>
-60:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stamper_class</span>
-61:           <span class="ruby-identifier">stamper_class_name</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">capitalize</span>.<span class="ruby-identifier">constantize</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>
-62:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/stampable.rb, line 68</span>
+68:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stampable</span>(<span class="ruby-identifier">options</span> = {})
+69:           <span class="ruby-identifier">defaults</span>  = {
+70:                         <span class="ruby-identifier">:stamper_class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:user</span>,
+71:                         <span class="ruby-identifier">:creator_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">created_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:creator_id</span>,
+72:                         <span class="ruby-identifier">:updater_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">updated_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:updater_id</span>,
+73:                         <span class="ruby-identifier">:deleter_attribute</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Ddb</span><span class="ruby-operator">::</span><span class="ruby-constant">Userstamp</span>.<span class="ruby-identifier">compatibility_mode</span> <span class="ruby-value">? </span><span class="ruby-operator">:</span><span class="ruby-identifier">deleted_by</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">:deleter_id</span>
+74:                       }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
+75: 
+76:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span> = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:stamper_class_name</span>].<span class="ruby-identifier">to_sym</span>
+77:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">creator_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:creator_attribute</span>].<span class="ruby-identifier">to_sym</span>
+78:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">updater_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:updater_attribute</span>].<span class="ruby-identifier">to_sym</span>
+79:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deleter_attribute</span>  = <span class="ruby-identifier">defaults</span>[<span class="ruby-identifier">:deleter_attribute</span>].<span class="ruby-identifier">to_sym</span>
+80: 
+81:           <span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
+82:             <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:creator</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">singularize</span>.<span class="ruby-identifier">camelize</span>,
+83:                                  <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">creator_attribute</span>
+84:                                  
+85:             <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:updater</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">singularize</span>.<span class="ruby-identifier">camelize</span>,
+86:                                  <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">updater_attribute</span>
+87:                                  
+88:             <span class="ruby-identifier">before_save</span>     <span class="ruby-identifier">:set_updater_attribute</span>
+89:             <span class="ruby-identifier">before_create</span>   <span class="ruby-identifier">:set_creator_attribute</span>
+90:                                  
+91:             <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">defined?</span>(<span class="ruby-constant">Caboose</span><span class="ruby-operator">::</span><span class="ruby-constant">Acts</span><span class="ruby-operator">::</span><span class="ruby-constant">Paranoid</span>)
+92:               <span class="ruby-identifier">belongs_to</span> <span class="ruby-identifier">:deleter</span>, <span class="ruby-identifier">:class_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">stamper_class_name</span>,
+93:                                    <span class="ruby-identifier">:foreign_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deleter_attribute</span>
+94:               <span class="ruby-identifier">before_destroy</span>  <span class="ruby-identifier">:set_deleter_attribute</span>
+95:             <span class="ruby-keyword kw">end</span>
+96:           <span class="ruby-keyword kw">end</span>
+97:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -187,17 +181,27 @@
         </div>
       
         <div class="method-description">
+          <p>
+Temporarily allows you to turn stamping off. For example:
+</p>
+<pre>
+  Post.without_stamps do
+    post = Post.find(params[:id])
+    post.update_attributes(params[:post])
+    post.save
+  end
+</pre>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000006-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/stampable.rb, line 53</span>
-53:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">without_stamps</span>
-54:           <span class="ruby-identifier">original_value</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span>
-55:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span> = <span class="ruby-keyword kw">false</span>
-56:           <span class="ruby-keyword kw">yield</span>
-57:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span> = <span class="ruby-identifier">original_value</span>
-58:         <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/stampable.rb, line 106</span>
+106:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">without_stamps</span>
+107:           <span class="ruby-identifier">original_value</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span>
+108:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span> = <span class="ruby-keyword kw">false</span>
+109:           <span class="ruby-keyword kw">yield</span>
+110:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">record_userstamp</span> = <span class="ruby-identifier">original_value</span>
+111:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

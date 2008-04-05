@@ -114,14 +114,18 @@
         </div>
       
         <div class="method-description">
+          <p>
+Sets the <a href="InstanceMethods.html#M000003">stamper</a> back to
+<tt>nil</tt> to prepare for the next request.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000004-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/stamper.rb, line 31</span>
-31:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_stamper</span>
-32:           <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>] = <span class="ruby-keyword kw">nil</span>
-33:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/stamper.rb, line 35</span>
+35:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_stamper</span>
+36:           <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>] = <span class="ruby-keyword kw">nil</span>
+37:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -137,14 +141,18 @@
         </div>
       
         <div class="method-description">
+          <p>
+Retrieves the existing <a href="InstanceMethods.html#M000003">stamper</a>
+for the current request.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000003-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/stamper.rb, line 27</span>
-27:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stamper</span>
-28:           <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>]
-29:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/stamper.rb, line 30</span>
+30:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stamper</span>
+31:           <span class="ruby-identifier">find</span>(<span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>])
+32:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -160,20 +168,25 @@
         </div>
       
         <div class="method-description">
+          <p>
+Used to set the <a href="InstanceMethods.html#M000003">stamper</a> for a
+particular request. See the <a href="../../Userstamp.html">Userstamp</a>
+module for more details on how to use this method.
+</p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000002-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/stamper.rb, line 17</span>
-17:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stamper=</span>(<span class="ruby-identifier">object</span>)
-18:           <span class="ruby-identifier">object_stamper</span> = <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>)
-19:             <span class="ruby-identifier">object</span>.<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{object.class.primary_key}&quot;</span>.<span class="ruby-identifier">to_sym</span>)
-20:           <span class="ruby-keyword kw">else</span>
-21:             <span class="ruby-identifier">object</span>
-22:           <span class="ruby-keyword kw">end</span>
-23: 
-24:           <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>] = <span class="ruby-identifier">object_stamper</span>
-25:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/stamper.rb, line 19</span>
+19:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stamper=</span>(<span class="ruby-identifier">object</span>)
+20:           <span class="ruby-identifier">object_stamper</span> = <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>)
+21:             <span class="ruby-identifier">object</span>.<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{object.class.primary_key}&quot;</span>.<span class="ruby-identifier">to_sym</span>)
+22:           <span class="ruby-keyword kw">else</span>
+23:             <span class="ruby-identifier">object</span>
+24:           <span class="ruby-keyword kw">end</span>
+25: 
+26:           <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">current</span>[<span class="ruby-node">&quot;#{self.to_s.downcase}_#{self.object_id}_stamper&quot;</span>] = <span class="ruby-identifier">object_stamper</span>
+27:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

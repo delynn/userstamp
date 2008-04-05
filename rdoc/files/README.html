@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Sat Apr 05 11:13:29 -0600 2008</td>
+      <td>Sat Apr 05 14:25:24 -0600 2008</td>
     </tr>
     </table>
   </div>
@@ -80,12 +80,11 @@ href="http://api.rubyonrails.com/classes/ActiveRecord/Timestamp.html">ActiveReco
 module.
 </p>
 <p>
-Two class methods (&#8216;acts_as_stamper&#8217; and
-&#8216;acts_as_stampable&#8217;) are implemented in this plugin. The
-acts_as_stamper method is used in models that are responsible for creating,
-updating, or deleting other objects. The acts_as_stampable method is used
-in models that are subject to being created, updated, or deleted by
-&#8216;stampers&#8217;.
+Two class methods (<tt>model_stamper</tt> and <tt>stampable</tt>) are
+implemented in this plugin. The <tt>model_stamper</tt> method is used in
+models that are responsible for creating, updating, or deleting other
+objects. The <tt>stampable</tt> method is used in models that are subject
+to being created, updated, or deleted by &#8216;stampers&#8217;.
 </p>
 <h2>Installation</h2>
 <p>
@@ -107,37 +106,62 @@ importing and future updating of this plugin.
 <h2>Usage</h2>
 <p>
 In this new version of the Userstamp plug-in, the assumption is that you
-have two different categories of objects; those that manimpulate, and those
-that are manipulated. For those objects that are being manipulated
-there&#8216;s the ActsAsStampable module and for the manipulators
-there&#8216;s the ActsAsStamper module. There&#8216;s also the actual
-Userstamp module for your controllers that assists in setting up your
-environment on a per request basis.
+have two different categories of objects; those that mani˝pulate, and
+those that are manipulated. For those objects that are being manipulated
+there&#8216;s the Stampable module and for the manipulators there&#8216;s
+the Stamper module. There&#8216;s also the actual Userstamp module for your
+controllers that assists in setting up your environment on a per request
+basis.
 </p>
 <p>
 To better understand how all this works, I think an example is in order.
-For this example we will assume that we are creating a weblog application
-that is comprised of User and Post objects. Since Users manipulate Posts,
-we&#8216;ll do the following:
+For this example we will assume that a weblog application is comprised of
+User and Post objects. The first thing we need to do is create the
+migrations for these objects, and the plug-in gives you a
+<tt>userstamps</tt> method for very easily doing this:
+</p>
+<pre>
+  class CreateUsers &lt; ActiveRecord::Migration
+    def self.up
+      create_table :users, :force =&gt; true do |t|
+        t.timestamps
+        t.userstamps
+        t.name
+      end
+    end
+
+    def self.down
+      drop_table :users
+    end
+  end
+
+  class CreatePosts &lt; ActiveRecord::Migration
+    def self.up
+      create_table :posts, :force =&gt; true do |t|
+        t.timestamps
+        t.userstamps
+        t.title
+      end
+    end
+
+    def self.down
+      drop_table :posts
+    end
+  end
+</pre>
+<p>
+Second, since Users are going to manipulate other objects in our project,
+we&#8216;ll use the <tt>model_stamper</tt> method in our User class:
 </p>
 <pre>
   class User &lt; ActiveRecord::Base
-    acts_as_stamper
+    model_stamper
   end
 </pre>
 <p>
-And Posts are manipulated by Users, so it should look like this:
-</p>
-<pre>
-  class Post &lt; ActiveRecord::Base
-    acts_as_stampable
-  end
-</pre>
-<p>
-Now we just need to setup our controllers to set the current user of the
+Finally, we need to setup a controller to set the current user of the
 application. It&#8216;s recommended that you do this in your
-ApplicationController (or a controller that all your stamper objects
-inherit from):
+ApplicationController:
 </p>
 <pre>
   class ApplicationController &lt; ActionController::Base
@@ -145,9 +169,27 @@ inherit from):
   end
 </pre>
 <p>
-So, what did we just do? The acts_as_stamper class method injects two
-methods into the User class. They are stamper= and stamper and look like
-this:
+If all you are interested in is making sure all tables that have the proper
+columns are stamped by the currently logged in user you can stop right
+here. More than likely you want all your associations setup on your stamped
+objects, and that&#8216;s where the <tt>stampable</tt> class method comes
+in. So in our example we&#8216;ll want to use this method in both our User
+and Post classes:
+</p>
+<pre>
+  class User &lt; ActiveRecord::Base
+    model_stamper
+    stampable
+  end
+
+  class Post &lt; ActiveRecord::Base
+    stampable
+  end
+</pre>
+<p>
+Okay, so what all have we done? The <tt>model_stamper</tt> class method
+injects two methods into the User class. They are stamper= and stamper and
+look like this:
 </p>
 <pre>
   def stamper=(object)
@@ -170,9 +212,16 @@ Thread.current to save the current stamper so as to avoid conflict with
 concurrent requests.
 </p>
 <p>
+The <tt>stampable</tt> method allows you to customize what columns will get
+stamped, and also creates the <tt>creator</tt>, <tt>updater</tt>, and
+<tt>deleter</tt> associations.
+</p>
+<p>
 The Userstamp module that we included into our ApplicationController uses
-the setter method to tell the set which user is currently making the
-request. By default the &#8216;set_stampers&#8217; method looks like this:
+the setter method to set which user is currently making the request. By
+default the &#8216;set_stampers&#8217; method works perfectly with the <a
+href="http://svn.techno-weenie.net/projects/plugins/restful_authentication">RestfulAuthentication</a>
+plug-in:
 </p>
 <pre>
   def set_stampers
@@ -180,31 +229,44 @@ request. By default the &#8216;set_stampers&#8217; method looks like this:
   end
 </pre>
 <p>
-This implementation assumes you are using ActsAsAuthenticated, but you can
-obviously change over-ride this method to better match your implementation.
+If you aren&#8216;t using ActsAsAuthenticated, then you need to create your
+own version of the <tt>set_stampers</tt> method in the controller where
+you&#8216;ve included the Userstamp module.
 </p>
 <p>
-Now, let&#8216;s get back to ActsAsStampable (since it really is the
-interesting one). If you&#8216;ve already created your database with
-columns called &#8216;creator_id&#8217;, &#8216;updater_id&#8217; and
-&#8216;deleter_id&#8217;, and you&#8216;re Stamper object is
-&#8216;User&#8217; than your set and ready to go. ActsAsStampable sets up
-before_* filters that are responsible for setting those attributes at the
-appropriate times. It also creates the belongs_to relationships for you.
+Now, let&#8216;s get back to the Stampable module (since it really is the
+interesting one). The Stampable module sets up before_* filters that are
+responsible for setting those attributes at the appropriate times. It also
+creates the belongs_to relationships for you.
 </p>
 <p>
-If you need to use something different the method can be completely
-customized. Here&#8216;s an example of how you would upgrade an application
-currently using the initial version of the plugin:
+If you need to customize the columns that are stamped, the
+<tt>stampable</tt> method can be completely customized. Here&#8216;s an
+quick example:
 </p>
 <pre>
   class Post &lt; ActiveRecord::Base
     acts_as_stampable :stamper_class_name =&gt; :person,
-                      :creator_attribute  =&gt; :created_by,
-                      :updater_attribute  =&gt; :updated_by,
-                      :deleter_attribute  =&gt; :deleted_by
+                      :creator_attribute  =&gt; :create_user,
+                      :updater_attribute  =&gt; :update_user,
+                      :deleter_attribute  =&gt; :delete_user
   end
 </pre>
+<p>
+If you are upgrading your application from the old version of Userstamp,
+there is a compatibility mode to have the plug-in use the old
+&quot;_by&quot; columns by default. To enable this mode, add the following
+line to the RAILS_ROOT/config/environment.rb file:
+</p>
+<pre>
+  Ddb::Userstamp.compatibility_mode = true
+</pre>
+<p>
+If you are having a difficult time getting the Userstamp plug-in to work, I
+recommend you checkout the sample application that I created. You can find
+this application on <a
+href="http://github.com/delynn/userstamp_sample">GitHub</a>
+</p>
 <h2>Uninstall</h2>
 <p>
 Uninstalling the plugin can be done using the built in Rails plugin script.
@@ -221,7 +283,17 @@ directory.
 <h2>Running Unit Tests</h2>
 <p>
 There are extensive unit tests in the &quot;test&quot; directory of the
-plugin.
+plugin. These test can be run individually by executing the following
+command from the userstamp directory:
+</p>
+<pre>
+ ruby test/compatibility_stamping_test.rb
+ ruby test/stamping_test.rb
+ ruby test/userstamp_controller_test.rb
+</pre>
+<p>
+If you have this installed as a plug-in to Rails you can also run the +rake
+test:plugins+ task from the root of your application.
 </p>
 <h2>Bugs &amp; Feedback</h2>
 <p>
