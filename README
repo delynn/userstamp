@@ -166,9 +166,6 @@ individually by executing the following command from the userstamp directory:
  ruby test/compatibility_stamping_test.rb
  ruby test/stamping_test.rb
  ruby test/userstamp_controller_test.rb
- 
-If you have this installed as a plug-in to Rails you can also run the +rake test:plugins+ task
-from the root of your application.
 
 
 == Bugs & Feedback
