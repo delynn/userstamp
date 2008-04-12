@@ -89,7 +89,7 @@ module Ddb #:nodoc:
             before_create   :set_creator_attribute
                                  
             if defined?(Caboose::Acts::Paranoid)
-              belongs_to :deleter, :class_name => self.stamper_class_name,
+              belongs_to :deleter, :class_name => self.stamper_class_name.to_s.singularize.camelize,
                                    :foreign_key => self.deleter_attribute
               before_destroy  :set_deleter_attribute
             end
