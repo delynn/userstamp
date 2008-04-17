@@ -89,7 +89,7 @@ module Ddb #:nodoc:
             before_create   :set_creator_attribute
                                  
             if defined?(Caboose::Acts::Paranoid)
-              belongs_to :deleter, :class_name => self.stamper_class_name,
+              belongs_to :deleter, :class_name => self.stamper_class_name.to_s.singularize.camelize,
                                    :foreign_key => self.deleter_attribute
               before_destroy  :set_deleter_attribute
             end
@@ -118,27 +118,27 @@ module Ddb #:nodoc:
       module InstanceMethods #:nodoc:
         private
           def has_stamper?
-            !self.class.stamper_class.nil? && !self.class.stamper_class.stamper.nil?
+            !self.class.stamper_class.nil? && !self.class.stamper_class.stamper.nil? rescue false
           end
 
           def set_creator_attribute
             return unless self.record_userstamp
             if respond_to?(self.creator_attribute.to_sym) && has_stamper?
-              self.creator = self.class.stamper_class.stamper
+              self.send("#{self.creator_attribute}=".to_sym, self.class.stamper_class.stamper)
             end
           end
 
           def set_updater_attribute
             return unless self.record_userstamp
             if respond_to?(self.updater_attribute.to_sym) && has_stamper?
-              self.updater = self.class.stamper_class.stamper
+              self.send("#{self.updater_attribute}=".to_sym, self.class.stamper_class.stamper)
             end
           end
 
           def set_deleter_attribute
             return unless self.record_userstamp
             if respond_to?(self.deleter_attribute.to_sym) && has_stamper?
-              self.deleter = self.class.stamper_class.stamper
+              self.send("#{self.deleter_attribute}=".to_sym, self.class.stamper_class.stamper)
               save
             end
           end

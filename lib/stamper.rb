@@ -28,7 +28,7 @@ module Ddb #:nodoc:
 
         # Retrieves the existing stamper for the current request.
         def stamper
-          find(Thread.current["#{self.to_s.downcase}_#{self.object_id}_stamper"])
+          Thread.current["#{self.to_s.downcase}_#{self.object_id}_stamper"]
         end
 
         # Sets the stamper back to +nil+ to prepare for the next request.
