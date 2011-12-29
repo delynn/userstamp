@@ -1,3 +1,7 @@
+require "userstamp/stamper"
+require "userstamp/stampable"
+require "userstamp/migration_helper"
+
 module Ddb
   module Controller
     # The Userstamp module, when included into a controller, adds a before filter
