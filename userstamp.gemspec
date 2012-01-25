@@ -6,10 +6,10 @@ require "userstamp/version"
 Gem::Specification.new do |s|
   s.name        = "userstamp"
   s.version     = Userstamp::VERSION
-  s.authors     = ["delynn"]
-  s.email       = [""]
-  s.homepage    = ""
-  s.summary     = ""
+  s.authors     = ["DeLynn Berry"]
+  s.email       = ["delynn@gmail.com"]
+  s.homepage    = "https://github.com/delynn/userstamp"
+  s.summary     = "Add audting to your ActiveRecord models"
   s.description = %q{This Rails plugin extends ActiveRecord::Base to add automatic updating of created_by and updated_by attributes of your models in much the same way that the ActiveRecord::Timestamp module updates created_(at/on) and updated_(at/on) attributes.}
 
   s.rubyforge_project = "userstamp"
